@@ -1,0 +1,34 @@
+<section class="sign-in" style="background: url('../assets/images/background-img.png') no-repeat;">
+    <div class="container">
+      <div class="signin-content">
+        <div class="signin-image">
+          <figure><img src="../../../assets/images/signup.png" alt="sign up image"></figure>
+          <br>
+          <a href="#" class="signup-image-link">Create an account</a>
+        </div>
+  
+        <div class="signin-form">
+          <h2 class="form-title">Sign in</h2>
+          <form (ngSubmit)="onSubmit()">
+            <div class="form-group">
+              <label for="your_name"><i class="material-icons">account_circle</i></label>
+              <input type="text" id="your_name" [(ngModel)]="username" placeholder="Your Name" required />
+            </div>
+            <div class="form-group">
+              <label for="your_pass"><i class="material-icons">lock</i></label>
+              <input type="password" id="your_pass" [(ngModel)]="password" placeholder="Password" required />
+            </div>
+            <div class="form-group">
+              <input type="checkbox" id="remember-me" class="agree-term" />
+              <label for="remember-me" class="label-agree-term"><span><span></span></span>Remember me</label>
+            </div>
+            <div class="form-group form-button">
+              <input type="submit" id="signin" class="form-submit" value="Log in" />
+            </div>
+          </form>
+          <p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+  
