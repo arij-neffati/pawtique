@@ -1,25 +1,15 @@
-/*import { Component } from '@angular/core';
-
-@Component({
-  selector: 'app-signin',
-  standalone: true,
-  imports: [],
-  templateUrl: './signin.component.html',
-  styleUrl: './signin.component.css'
-})
-export class SigninComponent {
-
-}*/
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http'; // Importation de HttpClient
+import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-signin',
   standalone: true,
-  imports: [],
+  imports: [CommonModule, FormsModule], // Supprimez NgModule ici
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.css']
 })
@@ -47,7 +37,7 @@ export class SigninComponent {
         if (response) {
           alert('Connexion réussie !');
           localStorage.setItem('token', response.token);
-          this.router.navigate(['/dashboard']);  // Redirection vers le tableau de bord
+          this.router.navigate(['/dashboard']); 
         }
       });
   }
