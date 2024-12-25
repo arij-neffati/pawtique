@@ -1,8 +1,17 @@
-<app-header></app-header>
-<app-nav></app-nav>
-<app-cart></app-cart>
+<ng-container *ngIf="shouldShowLayout()">
+  <app-header></app-header>
+  <app-nav></app-nav>
+</ng-container>
+
 <router-outlet></router-outlet>
-<app-footer></app-footer>
+
+<ng-container *ngIf="shouldShowLayout()">
+  <app-footer></app-footer>
+</ng-container>
+
+
+
+
 
 
 

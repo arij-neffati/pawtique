@@ -1,4 +1,6 @@
 import { Component, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Router, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { RouterOutlet } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { RouterLinkActive } from '@angular/router';
@@ -21,17 +23,63 @@ import { WishlistComponent } from './components/wishlist/wishlist.component';
 import { SigninComponent } from './components/signin/signin.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { UsComponent } from './components/us/us.component';
+import { CommonModule } from '@angular/common';  // Import CommonModule
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,RouterLinkActive,RouterLink , HeaderComponent, NavComponent , BannerComponent ,BestsellingComponent,BlogComponent,CartComponent,CategoriesComponent,
-    ClothesComponent,DiscountComponent,FoodComponent,FooterComponent,InstaComponent,RegisterComponent,ServiceComponent,TestimonialComponent,WishlistComponent
-  , SigninComponent, SignupComponent,UsComponent],
+  imports: [
+    RouterOutlet,
+    RouterLinkActive,
+    RouterLink,
+    HeaderComponent,
+    NavComponent,
+    BannerComponent,
+    BestsellingComponent,
+    BlogComponent,
+    CartComponent,
+    CategoriesComponent,
+    ClothesComponent,
+    DiscountComponent,
+    FoodComponent,
+    FooterComponent,
+    InstaComponent,
+    RegisterComponent,
+    ServiceComponent,
+    TestimonialComponent,
+    WishlistComponent,
+    SigninComponent,
+    SignupComponent,
+    UsComponent,
+    CommonModule  
+  ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA] 
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class AppComponent {
   title = 'pawtique';
+  currentUrl: string = '';
+
+  constructor(private router: Router) {
+  
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: any) => { 
+        this.currentUrl = event.urlAfterRedirects;
+        console.log('Updated URL:', this.currentUrl);
+      });
+
+  
+    this.currentUrl = this.router.url;
+    console.log('Initial URL:', this.currentUrl);
+  }
+
+  
+  shouldShowLayout(): boolean {
+    const noLayoutRoutes = ['/signin', '/signup'];
+    const cleanUrl = this.currentUrl.split('?')[0].split('#')[0];
+    console.log('Checking Layout Visibility for URL:', cleanUrl);
+    return !noLayoutRoutes.includes(cleanUrl);
+  }
 }
