@@ -11,6 +11,8 @@ require("dotenv").config();
 
 const bcrypt = require('bcrypt');
 
+const path=require("path");
+
 let transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -135,7 +137,7 @@ const sendVerificationEmail=({_id,email},res)=>{
         newVerification.save().
             then(()=> {
                 transporter
-                .sendEmail(mailOptions)
+                .sendMail(mailOptions)
                 .then(()=>{
                     res.json({
                         status: "Pending",
@@ -171,12 +173,81 @@ const sendVerificationEmail=({_id,email},res)=>{
 router.get("/verify/:userId/:uniqueString",(req,res)=>{
     let {userId , uniqueString} =req.params;
 
-    UserVerification.find({userId})
-    .then()
+    UserVerification
+    .find({userId})
+    .then((result)=> {
+        if (result.length>0){
+            const {expiresAt} =result[0];
+            const hashedUniqueString= result[0].uniqueString;
+
+            if (expiresAt < Date.now()){
+                UserVerification.deleteOne({_id : userId})
+                .then(()=>{
+                    User.deleteOne({_id : userId})
+                    .then(()=>{
+                        let message="Link has expired try again";
+                        res.redirect(`/user/verified?error=true&message=${message}`);
+                    })
+                    .catch(error =>{
+                        let message="Clearing user with expired unique string failed";
+                        res.redirect(`/user/verified?error=true&message=${message}`);   
+                    })
+                })
+                .catch((error)=>{
+                    let message="An Error occured while clearing expired user verification";
+                    res.redirect(`/user/verified?error=true&message=${message}`);
+                });
+            }else{
+                //valid record 
+                //compare
+
+                bcrypt
+                .compare(uniqueString,hashedUniqueString)
+                .then(result => {
+                    if (result){
+
+                        User.updateOne({_id :userId}, {verified :true})
+                        .then(()=>{
+                            UserVerification.deleteOne({userId})
+                            .then(()=>{
+                                res.sendFile(path.join(__dirname,"./../view/verified.html"));
+                            })
+                            .catch((error)=>{
+                                console.log(error);
+                                let message="An Error occured while finalizing successful verification";
+                                res.redirect(`/user/verified?error=true&message=${message}`);
+                            })
+                        })
+                        .catch((error)=>{
+                            console.log(error);
+                            let message="An Error occured while updating user record to verified";
+                            res.redirect(`/user/verified?error=true&message=${message}`);
+                        })
+                    }else{
+                        let message="Invalid verification chack your inbox";
+                        res.redirect(`/user/verified?error=true&message=${message}`);
+                    }
+                })
+                .catch(error=>{
+                    let message="An Error occured while comparing";
+                    res.redirect(`/user/verified?error=true&message=${message}`);
+                })
+            }
+        }else {
+            let message="account record doesn t exist or already verified";
+            res.redirect(`/user/verified?error=true&message=${message}`);
+        }
+    })
     .catch((error)=>{
         console.log(error);
+        let message="An Error occured while while cheking for existing user verification";
+        res.redirect(`/user/verified?error=true&message=${message}`);
     })
-} )
+} );
+
+router.get("/verified",(req,res)=>{
+    res.sendFile(path.join(__dirname,"./../view/verified.html"));
+})
 
 
 router.post('/signin', (req, res) => {
@@ -193,7 +264,14 @@ router.post('/signin', (req, res) => {
     } else {
         User.find({ email }).then(data => {
             if (data.length) {
-                const hashedPassword = data[0].password;
+
+                if (!data[0].verified){
+                    res.json({
+                        status : "Failed",
+                        message: "Email hasn t been verified"
+                    })
+                }else{
+                    const hashedPassword = data[0].password;
                 bcrypt.compare(password, hashedPassword).then(result => {
                     if (result) {
                         res.json({
@@ -213,6 +291,8 @@ router.post('/signin', (req, res) => {
                         message: "An error occurred while comparing passwords!"
                     });
                 });
+                }
+                
             } else {
                 res.json({
                     status: "Failed",
