@@ -10,6 +10,7 @@ const prodcutSchema = new mongoose.Schema({
   
   price: { type: Number, required: true, default: 0 },
   countInStock: { type: Number, required: true, default: 0 },
+  type :{ type: String, required: true }
 
 
 });

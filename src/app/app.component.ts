@@ -4,12 +4,15 @@ import { filter } from 'rxjs/operators';
 import { RouterOutlet } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { RouterLinkActive } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';  // Import CommonModule
+
+// Components
 import { HeaderComponent } from './components/header/header.component';
 import { NavComponent } from './components/nav/nav.component';
 import { BannerComponent } from './components/banner/banner.component';
 import { BestsellingComponent } from './components/bestselling/bestselling.component';
 import { BlogComponent } from './components/blog/blog.component';
-import { CartComponent } from './components/cart/cart.component';
 import { CategoriesComponent } from './components/categories/categories.component';
 import { ClothesComponent } from './components/clothes/clothes.component';
 import { DiscountComponent } from './components/discount/discount.component';
@@ -23,25 +26,22 @@ import { WishlistComponent } from './components/wishlist/wishlist.component';
 import { SigninComponent } from './components/signin/signin.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { UsComponent } from './components/us/us.component';
-import { CommonModule } from '@angular/common';  // Import CommonModule
 
 @Component({
   selector: 'app-root',
   standalone: true,
   imports: [
-    RouterOutlet,
-    RouterLinkActive,
-    RouterLink,
-    HeaderComponent,
-    NavComponent,
-    BannerComponent,
-    BestsellingComponent,
-    BlogComponent,
-    CartComponent,
+    RouterOutlet,  // For routing features
+    RouterLinkActive,  // For router link active state
+    RouterLink,  // For router link directive
+    HeaderComponent, 
+    NavComponent, 
+    BannerComponent, 
+    BestsellingComponent, 
+    BlogComponent, 
     CategoriesComponent,
     ClothesComponent,
     DiscountComponent,
-    FoodComponent,
     FooterComponent,
     InstaComponent,
     RegisterComponent,
@@ -51,7 +51,8 @@ import { CommonModule } from '@angular/common';  // Import CommonModule
     SigninComponent,
     SignupComponent,
     UsComponent,
-    CommonModule  
+    HttpClientModule,  // For making HTTP requests
+    CommonModule  // For using directives like ngFor
   ],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
@@ -62,7 +63,6 @@ export class AppComponent {
   currentUrl: string = '';
 
   constructor(private router: Router) {
-  
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
       .subscribe((event: any) => { 
@@ -70,12 +70,10 @@ export class AppComponent {
         console.log('Updated URL:', this.currentUrl);
       });
 
-  
     this.currentUrl = this.router.url;
     console.log('Initial URL:', this.currentUrl);
   }
 
-  
   shouldShowLayout(): boolean {
     const noLayoutRoutes = ['/signin', '/signup'];
     const cleanUrl = this.currentUrl.split('?')[0].split('#')[0];

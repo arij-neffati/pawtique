@@ -1,16 +1,28 @@
 require('./config/db');
-
 const express = require('express');
 const app = express();
 const port = process.env.PORT || 3000;
 
-const UserRouter = require('./api/user'); 
-const databaseSeeder = require('./DataSeeder'); 
-const productRoute = require('./routes/Product'); 
-const strayRouter = require('./api/strayRouter'); 
+const UserRouter = require('./api/user');
+const databaseSeeder = require('./DataSeeder');
+const productRoute = require('./routes/Product');
+const strayRouter = require('./api/strayRouter');
 const orderRoute = require("./routes/Order");
+const cors = require('cors');
 
-// Middleware
+
+
+
+ app.use(cors({
+  origin: 'http://localhost:4200', // your Angular app's URL
+   methods: ['GET', 'POST', 'PUT', 'DELETE'],
+   allowedHeaders: ['Content-Type', 'Authorization']
+ }));
+
+
+app.options('*', cors()); 
+
+// Middleware for JSON parsing
 app.use(express.json());
 
 // Routes

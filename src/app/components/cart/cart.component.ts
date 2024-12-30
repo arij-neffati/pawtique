@@ -1,13 +1,35 @@
-import { Component , CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';  // Import CommonModule for ngFor
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-cart',
-  standalone: true,
-  imports: [],
+  standalone: true,  // Make it a standalone component
+  imports: [CommonModule],  // Include CommonModule for common Angular features
   templateUrl: './cart.component.html',
-  styleUrl: './cart.component.css',
-  schemas: [CUSTOM_ELEMENTS_SCHEMA] 
+  styleUrls: ['./cart.component.css'],
 })
-export class CartComponent {
+export class CartComponent implements OnInit {
+  cartItems: any[] = [];
+  totalPrice: number = 0;
 
+  constructor(private cartService: CartService) {}
+
+  ngOnInit(): void {
+    this.cartService.cartItems$.subscribe((items) => {
+      this.cartItems = items;
+      this.calculateTotalPrice();
+    });
+  }
+
+  calculateTotalPrice(): void {
+    this.totalPrice = this.cartItems.reduce(
+      (acc, item) => acc + item.price * item.qty,
+      0
+    );
+  }
+
+  removeFromCart(productId: string): void {
+    this.cartService.removeFromCart(productId);
+  }
 }
