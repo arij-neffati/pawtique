@@ -1,35 +1,32 @@
 <div class="container py-5">
   <h4 class="d-flex justify-content-between align-items-center mb-3">
     <span class="text-primary">Your Wishlist</span>
-    <span class="badge bg-primary rounded-circle pt-2">3</span>
+    <span class="badge bg-primary rounded-circle pt-2">{{ wishlistItems.length }}</span>
   </h4>
   <ul class="list-group mb-3">
-    <li class="list-group-item d-flex justify-content-between lh-sm">
+    <li
+      *ngFor="let item of wishlistItems"
+      class="list-group-item d-flex justify-content-between lh-sm"
+    >
       <div>
-        <h6 class="my-0">Grey Hoodie</h6>
-        <small class="text-body-secondary">Brief description</small>
+        <h6 class="my-0">{{ item.name }}</h6>
+        <small class="text-body-secondary">{{ item.description }}</small>
       </div>
-      <span class="text-body-secondary">$12</span>
-    </li>
-    <li class="list-group-item d-flex justify-content-between lh-sm">
-      <div>
-        <h6 class="my-0">Dog Food</h6>
-        <small class="text-body-secondary">Brief description</small>
+      <div class="text-end">
+        <span class="text-body-secondary d-block">{{ item.price }} DT</span>
+        <button
+          class="btn btn-success btn-sm mt-2 me-2"
+          (click)="moveToCart(item)"
+        >
+          Move to Cart
+        </button>
+        <button
+          class="btn btn-danger btn-sm mt-2"
+          (click)="removeFromWishlist(item._id)"
+        >
+          Remove
+        </button>
       </div>
-      <span class="text-body-secondary">$8</span>
-    </li>
-    <li class="list-group-item d-flex justify-content-between lh-sm">
-      <div>
-        <h6 class="my-0">Soft Toy</h6>
-        <small class="text-body-secondary">Brief description</small>
-      </div>
-      <span class="text-body-secondary">$5</span>
-    </li>
-    <li class="list-group-item d-flex justify-content-between">
-      <span class="fw-bold">Total (USD)</span>
-      <strong>$25</strong>
     </li>
   </ul>
-
-  <button class="w-100 btn btn-primary btn-lg">Move all to cart</button>
 </div>

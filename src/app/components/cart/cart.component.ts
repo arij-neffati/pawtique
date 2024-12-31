@@ -32,4 +32,14 @@ export class CartComponent implements OnInit {
   removeFromCart(productId: string): void {
     this.cartService.removeFromCart(productId);
   }
+
+  checkout(): void {
+    if (this.cartItems.length > 0) {
+      console.log('Proceeding to checkout with items:', this.cartItems);
+      alert('Proceeding to checkout!');
+      this.cartService.clearCart(); // Clear cart after checkout
+    } else {
+      alert('Your cart is empty!');
+    }
+  }
 }

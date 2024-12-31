@@ -110,63 +110,73 @@ router.post('/signup', (req, res) => {
 });
 
 //verif
-const sendVerificationEmail=({_id,email},res)=>{
-    //url used in email
-    const currentUrl="http://localhost:5000/";
+const sendVerificationEmail = ({ _id, email }, res) => {
+    const currentUrl = "http://localhost:3000/";  // Ensure the URL is correct
 
-    const uniqueString=uuidv4()+ _id;
-    const mailOptions ={
-        from: process.env.AUTH_MAIL,
-        to : email,
-        subject :"Verify your email",
-        html : `<p>Verify your email adress to complete the signup and login </p>
-        <p>This link expires in 6 hours</p><p>Press <a href=${currentUrl + "user/verify/" + _id + "/" + uniqueString}>here </a></p>`,
-    };
+    const uniqueString = uuidv4() + _id;
+    console.log("Generated unique string:", uniqueString);
 
-    // hash the unique string
-    const saltRounds=10;
-    bcrypt.hash(uniqueString,saltRounds).then((hashedUniqueString)=>{
-        //  set values in user verif coll
-        const newVerification=new UserVerification({
-            userId : _id,
-            uniqueString: hashedUniqueString,
-            createdAt: Date.now(),
-            expiresAt : Date.now() + 21600000,
-        });
+    bcrypt.hash(uniqueString, 10)
+        .then((hashedUniqueString) => {
+            console.log("Hashed unique string:", hashedUniqueString);
+            
+            // Create a new verification record
+            const newVerification = new UserVerification({
+                userId: _id,
+                uniqueString: hashedUniqueString,  // Save the hashed unique string
+                createdAt: Date.now(),
+                expiresAt: Date.now() + 21600000,  // 6 hours from now
+            });
 
-        newVerification.save().
-            then(()=> {
-                transporter
-                .sendMail(mailOptions)
-                .then(()=>{
-                    res.json({
-                        status: "Pending",
-                        message: "Verified"
-                    });
+            // Save the verification record
+            newVerification.save()
+                .then(() => {
+                    console.log("Verification saved successfully!");
+                    // Send verification email after saving the verification data
+                    const mailOptions = {
+                        from: process.env.AUTH_MAIL,
+                        to: email,
+                        subject: "Verify your email",
+                        html: `<p>Verify your email address to complete the signup and login.</p>
+                        <p>This link expires in 6 hours.</p>
+                        <p>Press <a href=${currentUrl + "user/verify/" + _id + "/" + uniqueString}>here</a> to verify.</p>`
+                        
+                    };
+
+                    // Send the verification email
+                    transporter.sendMail(mailOptions)
+                        .then(() => {
+                            res.json({
+                                status: "Pending",
+                                message: "Verification email sent!"
+                            });
+                        })
+                        .catch((error) => {
+                            console.log("Error sending email:", error);
+                            res.json({
+                                status: "Failed",
+                                message: "Verification email failed!"
+                            });
+                        });
                 })
-                .catch ((error)=> {
-                    console.log(error);
+                .catch((error) => {
+                    console.error("Error saving verification data:", error);
                     res.json({
                         status: "Failed",
-                        message: "Verification email failed!"
+                        message: "Could not save verification data!"
                     });
-                })
-            })
-            .catch((error)=>{
-            console.log(error);
+                });
+        })
+        .catch((error) => {
+            console.error("Error hashing unique string:", error);
             res.json({
                 status: "Failed",
-                message: "Couldn t save verif email data!"
+                message: "An error occurred while hashing the unique string."
             });
-        })
-    })
-    .catch(()=>{
-        res.json({
-            status: "Failed",
-            message: "An error occured while hashing unique string"
         });
-    })
 };
+
+
 
 
 //verify email
@@ -187,15 +197,18 @@ router.get("/verify/:userId/:uniqueString",(req,res)=>{
                     .then(()=>{
                         let message="Link has expired try again";
                         res.redirect(`/user/verified?error=true&message=${message}`);
+
                     })
                     .catch(error =>{
                         let message="Clearing user with expired unique string failed";
-                        res.redirect(`/user/verified?error=true&message=${message}`);   
+                        res.redirect(`/user/verified?error=true&message=${message}`);
+   
                     })
                 })
                 .catch((error)=>{
                     let message="An Error occured while clearing expired user verification";
                     res.redirect(`/user/verified?error=true&message=${message}`);
+
                 });
             }else{
                 //valid record 
@@ -216,32 +229,38 @@ router.get("/verify/:userId/:uniqueString",(req,res)=>{
                                 console.log(error);
                                 let message="An Error occured while finalizing successful verification";
                                 res.redirect(`/user/verified?error=true&message=${message}`);
+
                             })
                         })
                         .catch((error)=>{
                             console.log(error);
                             let message="An Error occured while updating user record to verified";
                             res.redirect(`/user/verified?error=true&message=${message}`);
+
                         })
                     }else{
                         let message="Invalid verification chack your inbox";
                         res.redirect(`/user/verified?error=true&message=${message}`);
+
                     }
                 })
                 .catch(error=>{
                     let message="An Error occured while comparing";
                     res.redirect(`/user/verified?error=true&message=${message}`);
+
                 })
             }
         }else {
             let message="account record doesn t exist or already verified";
             res.redirect(`/user/verified?error=true&message=${message}`);
+
         }
     })
     .catch((error)=>{
         console.log(error);
         let message="An Error occured while while cheking for existing user verification";
         res.redirect(`/user/verified?error=true&message=${message}`);
+
     })
 } );
 
@@ -308,5 +327,35 @@ router.post('/signin', (req, res) => {
     }
 });
 
-module.exports = router;
+router.delete('/deleteUser/:userId', (req, res) => {
+    const { userId } = req.params;
 
+    UserVerification.deleteOne({ userId })
+        .then(() => {
+            User.deleteOne({ _id: userId })
+                .then(() => {
+                    res.json({
+                        status: "Success",
+                        message: `User with ID ${userId} and their verification data have been deleted.`
+                    });
+                })
+                .catch((error) => {
+                    console.error("Error deleting user:", error);
+                    res.json({
+                        status: "Failed",
+                        message: "An error occurred while deleting the user."
+                    });
+                });
+        })
+        .catch((error) => {
+            console.error("Error deleting user verification:", error);
+            res.json({
+                status: "Failed",
+                message: "An error occurred while deleting the verification data."
+            });
+        });
+});
+
+
+
+module.exports = router;

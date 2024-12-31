@@ -1,75 +1,66 @@
 <section class="sign-in" style="background: url('../assets/images/background-img.png') no-repeat;">
-    <div class="container">
-      <div class="signin-content">
-
-        <div class="signin-image">
-          <a routerLink="/signup" routerLinkActive="active" ariaCurrentWhenActive="page"  class="nav-link">
-          <figure><img src="../../../assets/images/signup.png" alt="sign up image"></figure>
-          <br>
-          Create an account</a>
-        </div>
-  
-        <div class="signin-form">
-          <h2 class="form-title">Sign in</h2>
-          <form (ngSubmit)="onSubmit()">
-            <div class="form-group">
-              <label for="your_name"><i class="material-icons">account_circle</i></label>
-              <input type="text" id="your_name" [(ngModel)]="username" placeholder="Your Name" required />
-            </div>
-            <div class="form-group">
-              <label for="your_pass"><i class="material-icons">lock</i></label>
-              <input type="password" id="your_pass" [(ngModel)]="password" placeholder="Password" required />
-            </div>
-            <div class="form-group">
-              <input type="checkbox" id="remember-me" class="agree-term" />
-              <label for="remember-me" class="label-agree-term"><span><span></span></span>Remember me</label>
-            </div>
-            <div class="form-group form-button">
-              <input type="submit" id="signin" class="form-submit" value="Log in" />
-            </div>
-          </form>
-          <p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
-        </div>
+  <div class="container">
+    <div class="signin-content">
+      
+      <!-- Sign In Section -->
+      <div *ngIf="!isSignUp" class="signin-form">
+        <h2 class="form-title">Sign in</h2>
+        <form (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="your_name"><i class="material-icons">account_circle</i></label>
+            <input type="text" id="your_name" [(ngModel)]="username" name="username" placeholder="Your Name" required />
+          </div>
+          <div class="form-group">
+            <label for="your_pass"><i class="material-icons">lock</i></label>
+            <input type="password" id="your_pass" [(ngModel)]="password" name="password" placeholder="Password" required />
+          </div>
+          <div class="form-group">
+            <input type="checkbox" id="remember-me" class="agree-term" />
+            <label for="remember-me" class="label-agree-term"><span><span></span></span>Remember me</label>
+          </div>
+          <div class="form-group form-button">
+            <input type="submit" id="signin" class="form-submit" value="Log in" />
+          </div>
+        </form>
+        <p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
+        <a (click)="toggleForm()" class="toggle-link">Don't have an account? Sign Up</a>
+      </div>
+      
+      <!-- Sign Up Section -->
+      <div *ngIf="isSignUp" class="signup-form">
+        <h2 class="form-title">Sign up</h2>
+        <form (ngSubmit)="onSignUpSubmit()">
+          <div class="form-group">
+            <label for="name"><i class="material-icons">account_circle</i></label>
+            <input type="text" [(ngModel)]="name" name="name" id="name" placeholder="Your Name" required />
+          </div>
+          <div class="form-group">
+            <label for="email"><i class="material-icons">email</i></label>
+            <input type="email" [(ngModel)]="email" name="email" id="email" placeholder="Your Email" required />
+          </div>
+          <div class="form-group">
+            <label for="pass"><i class="material-icons">lock</i></label>
+            <input type="password" [(ngModel)]="password" name="password" id="pass" placeholder="Password" required />
+          </div>
+          <div class="form-group">
+            <label for="re-pass"><i class="material-icons">lock_outline</i></label>
+            <input type="password" [(ngModel)]="confirmPassword" name="re-pass" id="re_pass" placeholder="Repeat your password" required />
+          </div>
+          <div class="form-group">
+            <label for="dob"><i class="material-icons">date_range</i></label>
+            <input type="date" id="dob" [(ngModel)]="dateOfBirth" name="dateOfBirth" placeholder="Date of Birth" required />
+          </div>
+          
+          <div class="form-group">
+            <input type="checkbox" [(ngModel)]="agreeTerms" name="agree-term" id="agree-term" class="agree-term" required />
+            <label for="agree-term" class="label-agree-term"><span><span></span></span>I agree all statements in <a href="#" class="term-service">Terms of service</a></label>
+          </div>
+          <div class="form-group form-button">
+            <input type="submit" id="signup" class="form-submit" value="Register" />
+          </div>
+        </form>
+        <a (click)="toggleForm()" class="toggle-link">Already a member? Sign In</a>
       </div>
     </div>
-  </section>
-  
-
-  <section class="signup" style="background: url('../assets/images/background-img.png') no-repeat;">
-    <div class="container">
-        <div class="signup-content">
-            <div class="signup-form">
-                <h2 class="form-title">Sign up</h2>
-                <form method="POST" class="register-form" id="register-form">
-                    <div class="form-group">
-                        <label for="name"><i class="material-icons">account_circle</i></label>
-                        <input type="text" name="name" id="name" placeholder="Your Name"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="email"><i class="material-icons">email</i></label>
-                        <input type="email" name="email" id="email" placeholder="Your Email"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="pass"><i class="material-icons">lock</i></label>
-                        <input type="password" name="pass" id="pass" placeholder="Password"/>
-                    </div>
-                    <div class="form-group">
-                        <label for="re-pass"><i class="material-icons">lock_outline</i></label>
-                        <input type="password" name="re_pass" id="re_pass" placeholder="Repeat your password"/>
-                    </div>
-                    <div class="form-group">
-                        <input type="checkbox" name="agree-term" id="agree-term" class="agree-term" />
-                        <label for="agree-term" class="label-agree-term"><span><span></span></span>I agree all statements in  <a href="#" class="term-service">Terms of service</a></label>
-                    </div>
-                    <div class="form-group form-button">
-                        <input type="submit" name="signup" id="signup" class="form-submit" value="Register"/>
-                    </div>
-                </form>
-            </div>
-            <div class="signup-image">
-                <figure><img src="../../../assets/images/signin.png" alt="sing up image"></figure>
-                <a href="#" class="signup-image-link">I am already member</a>
-            </div>
-        </div>
-    </div>
+  </div>
 </section>

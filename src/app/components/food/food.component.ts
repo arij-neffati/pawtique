@@ -1,37 +1,38 @@
 import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { CommonModule } from '@angular/common';  // For *ngFor and other directives
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router'; // Import RouterModule
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
+import { WishlistService } from '../../services/wishlist.service';
 
 @Component({
   selector: 'app-food',
-  standalone: true,  // Standalone component
-  imports: [CommonModule],  // Includes common Angular features
+  standalone: true,
+  imports: [CommonModule, RouterModule], // Include RouterModule
   templateUrl: './food.component.html',
   styleUrls: ['./food.component.css'],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA] 
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class FoodComponent implements OnInit {
-  products: any[] = [];  // Store all products
-  filteredProducts: any[] = [];  // Store filtered products
+  products: any[] = [];
+  filteredProducts: any[] = [];
 
-  constructor(private productService: ProductService, private cartService: CartService) {}
+  constructor(private productService: ProductService, private cartService: CartService, private wishlistService : WishlistService) {}
 
   ngOnInit(): void {
-    this.loadProducts();  // Load products when the component is initialized
+    this.loadProducts();
   }
 
   loadProducts(): void {
     this.productService.getProducts().subscribe(
       (data) => {
-        console.log('Received products:', data);  // Debug log to check received data
+        console.log('Received products:', data);
         if (data && data.length > 0) {
           this.products = data.map((product: any) => {
-            // Prepend the correct base path for images
             product.imageUrl = `assets/images/${product.image}`;
             return product;
           });
-          this.filteredProducts = this.products;  // Initialize filteredProducts with all products
+          this.filteredProducts = this.products;
         } else {
           console.log('No products available.');
         }
@@ -42,19 +43,19 @@ export class FoodComponent implements OnInit {
     );
   }
 
-  // Filter products based on type
   filterProducts(type: string): void {
     if (type) {
-      // Filter products by type
       this.filteredProducts = this.products.filter(product => product.type === type);
     } else {
-      // Show all products if no filter
       this.filteredProducts = this.products;
     }
   }
 
-  // Add product to cart
   addToCart(product: any): void {
     this.cartService.addToCart(product);
+  }
+  addToWishlist(product: any): void {
+    // Assuming you have a WishlistService to manage the wishlist
+    this.wishlistService.addToWishlist(product);
   }
 }
