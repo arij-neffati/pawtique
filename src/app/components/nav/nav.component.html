@@ -68,11 +68,24 @@
         <!-- Right Aligned Icons -->
         <div class="d-none d-lg-flex align-items-end ms-auto">
           <ul class="d-flex justify-content-end list-unstyled m-0">
-            <li>
-              <a routerLink="/signin" routerLinkActive="active" ariaCurrentWhenActive="page" class="nav-link" >
-                <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon>
+            <li *ngIf="currentUser">
+              <span class="nav-link">Welcome, {{ currentUser.name || 'Guest' }}</span> <!-- Add fallback for name -->
+            </li>
+        
+            <!-- If logged in, show logout button -->
+            <li *ngIf="currentUser">
+              <a (click)="logout()" class="nav-link">
+                <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon> Logout
               </a>
             </li>
+            
+            <!-- If not logged in, show sign-in button -->
+            <li *ngIf="!currentUser">
+              <a routerLink="/signin" routerLinkActive="active" ariaCurrentWhenActive="page" class="nav-link">
+                <iconify-icon icon="healthicons:person" class="fs-4"></iconify-icon> Sign In
+              </a>
+            </li>
+        
             <li>
               <a routerLink="/wishlist" routerLinkActive="active" ariaCurrentWhenActive="page" class="nav-link">
                 <iconify-icon icon="mdi:heart" class="fs-4"></iconify-icon>

@@ -3,31 +3,35 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { AuthService } from '../../services/auth.service';  // Importer AuthService
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-signin',
   standalone: true,
-  imports: [CommonModule, FormsModule], // Keep your imports here
+  imports: [CommonModule, FormsModule], 
   templateUrl: './signin.component.html',
   styleUrls: ['./signin.component.css']
 })
 export class SigninComponent {
-  // Sign In fields
   username: string = '';
   password: string = '';
   errorMessage: string = '';
-
-  // Sign-Up fields
-  isSignUp: boolean = false; // Toggle between Sign In and Sign Up
+  isSignUp: boolean = false;
+  
+  // Sign-up fields
   name: string = '';
   email: string = '';
   confirmPassword: string = '';
-  dateOfBirth: string = ''; // Changed to string to work with input[type="date"]
+  dateOfBirth: string = '';
   agreeTerms: boolean = false;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient, 
+    private router: Router,
+    private authService: AuthService // Injecter AuthService
+  ) {}
 
   // Toggle between Sign In and Sign Up
   toggleForm() {
@@ -43,29 +47,31 @@ export class SigninComponent {
   }
 
   // Handle Sign In
-  onSubmit() {
+  handleSubmit() {
     const loginData = {
-      username: this.username,
-      password: this.password,
+      email: this.username,
+      password: this.password
     };
 
-    this.http.post<any>('http://localhost:3000/user/login', loginData)
+    this.http.post<any>('http://localhost:3000/user/signin', loginData)
       .pipe(
         catchError(error => {
-          this.errorMessage = error.error?.message || 'Erreur de connexion.';
+          this.errorMessage = error.error?.message || 'Connection error';
           return of(null);
         })
       )
       .subscribe(response => {
-        if (response) {
-          alert('Connexion réussie !');
-          localStorage.setItem('token', response.token);
+        if (response?.status === "Success") {
+          // Set user data in AuthService and navigate
+          this.authService.setCurrentUser(response.data);
           this.router.navigate(['/dashboard']);
+        } else {
+          this.errorMessage = response?.message || 'Sign in failed';
         }
       });
   }
 
-  // Handle Sign Up
+  
   onSignUpSubmit() {
     if (this.password !== this.confirmPassword) {
       this.errorMessage = 'Passwords do not match!';
@@ -81,22 +87,22 @@ export class SigninComponent {
       name: this.name,
       email: this.email,
       password: this.password,
-      dateOfBirth: this.dateOfBirth // Send date as a string, which matches input[type="date"]
+      dateOfBirth: this.dateOfBirth
     };
 
     this.http.post<any>('http://localhost:3000/user/signup', user)
       .pipe(
         catchError(error => {
-          this.errorMessage = error.error?.message || 'An error occurred during sign-up.';
+          this.errorMessage = error.error?.message || 'Sign up failed';
           return of(null);
         })
       )
       .subscribe(response => {
-        if (response && response.status === "Pending") {
+        if (response?.status === "Pending") {
           alert('Please check your email to verify your account!');
-          this.toggleForm(); // Switch to Sign In after successful sign-up
+          this.toggleForm();  // Switch to Sign In after successful sign-up
         } else {
-          this.errorMessage = response?.message || 'An error occurred during sign-up.';
+          this.errorMessage = response?.message || 'An error occurred during sign-up';
         }
       });
   }

@@ -42,7 +42,15 @@
                 document.write('<div class="success">Email Verified Successfully!</div>');
             }
         </script>
-        <a href="/" class="btn">Return to Home</a>
+        <a onclick="redirectToSignIn()" class="btn">Go to Sign In</a>
+
+        <script>
+            function redirectToSignIn() {
+                const injector = window.getAngularInjector(); // Replace with a function to access Angular
+                const router = injector.get('Router');
+                router.navigate(['/signin']); // Adjust this to your Angular route for sign-in
+            }
+        </script>
     </div>
 </body>
 </html>

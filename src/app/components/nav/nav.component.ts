@@ -1,4 +1,4 @@
-import { Component ,CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component ,CUSTOM_ELEMENTS_SCHEMA, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { RouterLinkActive } from '@angular/router';
@@ -20,18 +20,37 @@ import { WishlistComponent } from '../wishlist/wishlist.component';
 import { SigninComponent } from '../signin/signin.component';
 import { SignupComponent } from '../signup/signup.component';
 import { UsComponent} from '../us/us.component';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-nav',
   standalone: true,
   imports: [RouterOutlet,RouterLinkActive,RouterLink , HeaderComponent, NavComponent , BannerComponent ,BestsellingComponent,BlogComponent,CartComponent,CategoriesComponent,
     ClothesComponent,DiscountComponent,FoodComponent,FooterComponent,InstaComponent,RegisterComponent,ServiceComponent,TestimonialComponent,WishlistComponent
-  , SigninComponent, SignupComponent,UsComponent],
+  , SigninComponent, SignupComponent,UsComponent,CommonModule],
   templateUrl: './nav.component.html',
   styleUrl: './nav.component.css',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
-export class NavComponent {
+export class NavComponent implements OnInit {
+  currentUser: any = null;  
 
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit(): void {
+    
+    this.authService.getCurrentUser().subscribe(user => {
+      this.currentUser = user; 
+    });
+  }
+
+  logout() {
+    this.authService.logout();  
+    this.router.navigate(['/home']); 
+  }
 }
+
+

@@ -5,7 +5,7 @@
       <!-- Sign In Section -->
       <div *ngIf="!isSignUp" class="signin-form">
         <h2 class="form-title">Sign in</h2>
-        <form (ngSubmit)="onSubmit()">
+        <form (ngSubmit)="handleSubmit()">
           <div class="form-group">
             <label for="your_name"><i class="material-icons">account_circle</i></label>
             <input type="text" id="your_name" [(ngModel)]="username" name="username" placeholder="Your Name" required />

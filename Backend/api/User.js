@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
-const User = require('./../models/User');
-const UserVerification = require('./../models/UserVerification');
+const User = require('../models/User');
+const UserVerification = require('../models/UserVerification');
 const nodemailer=require("nodemailer");
 
 const {v4 :uuidv4} =require("uuid");
