@@ -1,42 +1,61 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { StrayReportService } from '../../services/stray-report.service';
+import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
+
 
 @Component({
   selector: 'app-foundstray',
   standalone: true,
-  imports: [FormsModule], // Add FormsModule to the imports array
+  imports: [HttpClientModule, CommonModule, FormsModule],
   templateUrl: './foundstray.component.html',
   styleUrls: ['./foundstray.component.css']
 })
 export class FoundstrayComponent {
   name: string = '';
-  Lname: string = '';
+  lastName: string = '';
   email: string = '';
-  number: string = '';
+  phone: string = '';
   address: string = '';
+  isSubmitting: boolean = false;
+  errorMessage: string = '';
 
-  constructor(private http: HttpClient) {}
+  constructor(
+    private adoptionService: StrayReportService,
+    private router: Router
+  ) {}
 
-  onSubmit() {
+  handleSubmit() {
+    if (this.isSubmitting) return;
+    
+    this.isSubmitting = true;
+    console.log('Starting form submission...');
+
     const formData = {
       name: this.name,
-      Lname: this.Lname,
+      Lname: this.lastName,
       email: this.email,
-      number: this.number,
-      address: this.address,
+      phone: this.phone,
+      address: this.address
     };
-  
-    this.http.post('http://localhost:3000/report/report', formData).subscribe({
+
+    this.adoptionService.submitAdoptionForm(formData).subscribe({
       next: (response) => {
-        console.log('Success:', response);
+        console.log('Submission successful:', response);
+        alert('Thank you for your adoption request! We will contact you soon.');
+        this.router.navigate(['/home']);
       },
       error: (error) => {
-        console.error('HTTP Error:', error);
-        alert('Failed to submit the report. Please try again.');
+        console.error('Submission failed:', error);
+        alert(`Error: ${error.message || 'Unknown error occurred'}`);
+        this.isSubmitting = false;
       },
+      complete: () => {
+        console.log('Submission complete');
+        this.isSubmitting = false;
+      }
     });
-    
   }
-  
 }

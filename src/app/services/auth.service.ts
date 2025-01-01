@@ -18,13 +18,15 @@ export class AuthService {
   }
 
   // Method to sign in
-  signIn(credentials: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/signin`, credentials);
+  signIn(username: string, password: string): Observable<any> {
+    const loginData = { email: username, password: password };
+    return this.http.post<any>(`${this.apiUrl}/signin`, loginData);
   }
 
-  // Method to sign up
-  signUp(user: any): Observable<any> {
-    return this.http.post(`${this.apiUrl}/signup`, user);
+  // Sign up method
+  signUp(name: string, email: string, password: string): Observable<any> {
+    const user = { name: name, email: email, password: password };
+    return this.http.post<any>(`${this.apiUrl}/signup`, user);
   }
 
   // Get the current logged-in user as an observable

@@ -128,11 +128,11 @@ const sendVerificationEmail = ({ _id, email }, res) => {
                 expiresAt: Date.now() + 21600000,  // 6 hours from now
             });
 
-            // Save the verification record
+            
             newVerification.save()
                 .then(() => {
                     console.log("Verification saved successfully!");
-                    // Send verification email after saving the verification data
+                    
                     const mailOptions = {
                         from: process.env.AUTH_MAIL,
                         to: email,

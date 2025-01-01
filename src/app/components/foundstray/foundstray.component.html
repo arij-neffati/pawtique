@@ -1,30 +1,101 @@
-<section id="register" style="background: url('../assets/images/background-img.png') no-repeat;">
-  <div class="container">
-    <div class="row my-5 py-5">
-      <div class="offset-md-3 col-md-6 my-5">
-        <h2 class="display-3 fw-normal text-center">Found a stray?</h2>
+
+          <!-- adopt component -->
+          <section id="register" style="background: url('../assets/images/background-img.png') no-repeat;">
+            <div class="container">
+              <div class="row my-5 py-5">
+                <div class="offset-md-3 col-md-6 my-5">
+                  <h2 class="display-3 fw-normal text-center">Found a stray?</h2>
         <h1 class="text-center"><span class="text-primary">Fill in the form below, and we will contact you soon</span></h1>
-        <form (ngSubmit)="onSubmit()" #strayForm="ngForm">
-          <div class="mb-3">
-            <input type="text" class="form-control form-control-lg" [(ngModel)]="name" name="name" id="name" placeholder="Enter Your Name" required />
-          </div>
-          <div class="mb-3">
-            <input type="text" class="form-control form-control-lg" [(ngModel)]="Lname" name="Lname" id="Lname" placeholder="Enter Your Last Name" required />
-          </div>
-          <div class="mb-3">
-            <input type="email" class="form-control form-control-lg" [(ngModel)]="email" name="email" id="email" placeholder="Enter Your Email Address" required />
-          </div>
-          <div class="mb-3">
-            <input type="text" class="form-control form-control-lg" [(ngModel)]="number" name="number" id="number" placeholder="Enter your phone number" required />
-          </div>
-          <div class="mb-3">
-            <input type="text" class="form-control form-control-lg" [(ngModel)]="address" name="address" id="address" placeholder="Address" required />
-          </div>
-          <div class="d-grid gap-2">
-            <button type="submit" class="btn btn-dark btn-lg rounded-1" [disabled]="!strayForm.valid">Confirm</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-</section>
+                  <!-- Added #adoptForm template reference variable and prevent default form submission -->
+                  <form #adoptForm="ngForm" (ngSubmit)="handleSubmit(); adoptForm.reset()">
+                    <!-- Added form validation -->
+                    <div class="mb-3">
+                      <input 
+                        type="text" 
+                        class="form-control form-control-lg" 
+                        name="name" 
+                        id="name" 
+                        [(ngModel)]="name" 
+                        #nameInput="ngModel"
+                        required
+                        placeholder="Enter Your Name">
+                      <div *ngIf="nameInput.invalid && (nameInput.dirty || nameInput.touched)" class="text-danger">
+                        Name is required
+                      </div>
+                    </div>
+          
+                    <div class="mb-3">
+                      <input 
+                        type="text" 
+                        class="form-control form-control-lg" 
+                        name="lastName" 
+                        id="Lname" 
+                        [(ngModel)]="lastName"
+                        #lastNameInput="ngModel" 
+                        required
+                        placeholder="Enter Your Last Name">
+                      <div *ngIf="lastNameInput.invalid && (lastNameInput.dirty || lastNameInput.touched)" class="text-danger">
+                        Last name is required
+                      </div>
+                    </div>
+          
+                    <div class="mb-3">
+                      <input 
+                        type="email" 
+                        class="form-control form-control-lg" 
+                        name="email" 
+                        id="email" 
+                        [(ngModel)]="email"
+                        #emailInput="ngModel"
+                        required
+                        email
+                        placeholder="Enter Your Email Address">
+                      <div *ngIf="emailInput.invalid && (emailInput.dirty || emailInput.touched)" class="text-danger">
+                        Valid email is required
+                      </div>
+                    </div>
+          
+                    <div class="mb-3">
+                      <input 
+                        type="tel" 
+                        class="form-control form-control-lg" 
+                        name="phone" 
+                        id="number" 
+                        [(ngModel)]="phone"
+                        #phoneInput="ngModel"
+                        required
+                        placeholder="Enter your phone number">
+                      <div *ngIf="phoneInput.invalid && (phoneInput.dirty || phoneInput.touched)" class="text-danger">
+                        Phone number is required
+                      </div>
+                    </div>
+          
+                    <div class="mb-3">
+                      <input 
+                        type="text" 
+                        class="form-control form-control-lg" 
+                        name="address" 
+                        id="adress" 
+                        [(ngModel)]="address"
+                        #addressInput="ngModel"
+                        required
+                        placeholder="Address">
+                      <div *ngIf="addressInput.invalid && (addressInput.dirty || addressInput.touched)" class="text-danger">
+                        Address is required
+                      </div>
+                    </div>
+          
+                    <!-- Added form validation to button -->
+                    <div class="d-grid gap-2">
+                      <button 
+                        type="submit" 
+                        class="btn btn-dark btn-lg rounded-1"
+                        [disabled]="!adoptForm.form.valid || isSubmitting">
+                        {{ isSubmitting ? 'Submitting...' : 'Confirm' }}
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </section>
