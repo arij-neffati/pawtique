@@ -1,12 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+import { OrderService } from '../../services/order.service';
+import { Router } from '@angular/router';
 import { CartService } from '../../services/cart.service';
-import { OrderService } from '../../services/order.service'; // Order service to interact with the backend
+import { AuthService } from '../../services/auth.service';
+import { HttpClientModule } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-checkout',
   standalone: true,
+  imports: [HttpClientModule, CommonModule, FormsModule],
   templateUrl: './checkout.component.html',
-  styleUrls: ['./checkout.component.css'],
+  styleUrls: ['./checkout.component.css']
 })
 export class CheckoutComponent implements OnInit {
   cartItems: any[] = [];
@@ -15,46 +21,67 @@ export class CheckoutComponent implements OnInit {
     address: '',
     city: '',
     postalCode: '',
-    country: '',
+    country: ''
   };
+  userId: string = '';  // Store the user ID input by the user
+  email: string = '';   // Store the email input by the user
+  isSubmitting: boolean = false;
+  errorMessage: string = '';
 
-  constructor(private cartService: CartService, private orderService: OrderService) {}
+  constructor(
+    private cartService: CartService,
+    private orderService: OrderService,
+    private router: Router,
+    private authService: AuthService
+  ) {}
 
   ngOnInit(): void {
-    // Load cart items
     this.cartItems = this.cartService.getCartItems();
-    // Calculate total price
     this.totalPrice = this.cartItems.reduce(
       (acc, item) => acc + item.price * item.qty,
       0
     );
   }
 
-  placeOrder(): void {
-    const uniqueString = 'USER_VERIFICATION_STRING'; // Replace with actual user uniqueString logic (e.g., from localStorage or session)
+  handleOrderSubmit(): void {
+    if (this.isSubmitting) return;
 
-    const order = {
-      orderItems: this.cartItems.map(item => ({
+    if (!this.userId || !this.email) {
+      this.errorMessage = 'Please provide your user ID and email to place an order.';
+      return;
+    }
+
+    this.isSubmitting = true;
+
+    const orderData = {
+      userId: this.userId,  // Get the user ID from the input field
+      email: this.email,    // Get the email from the input field
+      orderItems: this.cartItems.map((item) => ({
         name: item.name,
         qty: item.qty,
         price: item.price,
-        image: item.imageUrl,
-        product: item._id, // Assuming this is the product ID
+        productId: item._id,  // Assuming this is the product ID
       })),
       shippingAddress: this.shippingAddress,
-      shippingPrice: 0, // You can adjust this based on your shipping logic
       price: this.totalPrice,
+      shippingPrice: 10,  // Example shipping cost
     };
 
-    // Call the OrderService to place the order
-    this.orderService.createOrder(order, uniqueString).subscribe(
-      (response) => {
-        console.log('Order created successfully:', response);
-        // Redirect to confirmation or order list page
+    console.log('Order Data:', orderData);  // Log the orderData to confirm the user data is included
+
+    this.orderService.createOrder(orderData).subscribe({
+      next: () => {
+        this.cartService.clearCart();
+        alert('Thank you for your order! We will process it soon.');
+        this.router.navigate(['/order-confirmation']);
       },
-      (error) => {
-        console.error('Error creating order:', error);
+      error: (error) => {
+        console.error('Error during order submission:', error);
+        this.errorMessage = error.error?.error || 'Order submission failed. Please try again.';
+      },
+      complete: () => {
+        this.isSubmitting = false;
       }
-    );
+    });
   }
 }

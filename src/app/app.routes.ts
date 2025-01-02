@@ -19,6 +19,7 @@ import { SignupComponent } from './components/signup/signup.component';
 import { UsComponent} from './components/us/us.component';
 import { AdoptComponent } from './components/adopt/adopt.component';
 import { FoundstrayComponent } from './components/foundstray/foundstray.component';
+import { CheckoutComponent } from './components/checkout/checkout.component';
 
 
 export const routes: Routes = [ { path: 'nav', component: NavComponent },
@@ -40,6 +41,7 @@ export const routes: Routes = [ { path: 'nav', component: NavComponent },
     {title:'pawsitive|AboutUs',path: 'us', component: UsComponent },
     {title:'pawsitive|Abopt',path: 'adopt', component: AdoptComponent },
     {title:'pawsitive|FoundAStray',path: 'foundstray', component: FoundstrayComponent },
+    {title:'pawsitive|Checkout',path: 'checkout', component: CheckoutComponent },
     
    { path: '**', redirectTo: '' },  // Redirection par défaut en cas de route non trouvée
    { path: '', component: BannerComponent } // Page d'accueil

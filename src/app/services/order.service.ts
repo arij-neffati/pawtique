@@ -1,25 +1,30 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class OrderService {
-  private apiUrl = 'http://localhost:3000/api/orders'; // Replace with your API URL
+  private apiUrl = 'http://localhost:3000/api/orders';  // Update with your actual API URL
 
   constructor(private http: HttpClient) {}
 
-  // Method to create an order
-  createOrder(order: any, uniqueString: string): Observable<any> {
-    const headers = new HttpHeaders().set('uniqueString', uniqueString); // Attach uniqueString for user verification
+  createOrder(orderData: any): Observable<any> {
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
 
-    return this.http.post(this.apiUrl, order, { headers: headers });
-  }
+    return this.http.post(this.apiUrl, orderData, { 
+      headers,
+      withCredentials: true  // Ensure cookies are sent along with the request
+    }).pipe(
+      catchError(error => {
+        console.error('Error during order creation:', error);
+        console.error('Backend response:', error.error);
 
-  // Method to get all orders for a user
-  getOrders(uniqueString: string): Observable<any[]> {
-    const headers = new HttpHeaders().set('uniqueString', uniqueString);
-    return this.http.get<any[]>(this.apiUrl, { headers: headers });
+        const errorMessage = error.error?.message || 'Order creation failed. Please try again.';
+        return throwError(() => new Error(errorMessage));
+      })
+    );
   }
 }

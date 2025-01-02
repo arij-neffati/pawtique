@@ -53,7 +53,7 @@ export class SigninComponent {
       password: this.password
     };
 
-    this.http.post<any>('http://localhost:3000/user/signin', loginData)
+    this.http.post<any>('http://localhost:3000/user/signin', loginData , { withCredentials: true })
       .pipe(
         catchError(error => {
           this.errorMessage = error.error?.message || 'Connection error';
@@ -90,7 +90,7 @@ export class SigninComponent {
       dateOfBirth: this.dateOfBirth
     };
 
-    this.http.post<any>('http://localhost:3000/user/signup', user)
+    this.http.post<any>('http://localhost:3000/user/signup', user, { withCredentials: true })
       .pipe(
         catchError(error => {
           this.errorMessage = error.error?.message || 'Sign up failed';

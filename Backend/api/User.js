@@ -1,3 +1,5 @@
+//user.js
+
 const express = require('express');
 const router = express.Router();
 
@@ -283,35 +285,63 @@ router.post('/signin', (req, res) => {
     } else {
         User.find({ email }).then(data => {
             if (data.length) {
-
-                if (!data[0].verified){
-                    res.json({
-                        status : "Failed",
-                        message: "Email hasn t been verified"
-                    })
-                }else{
-                    const hashedPassword = data[0].password;
-                bcrypt.compare(password, hashedPassword).then(result => {
-                    if (result) {
-                        res.json({
-                            status: "Success",
-                            message: "Sign in successful",
-                            data: data
-                        });
-                    } else {
-                        res.json({
-                            status: "Failed",
-                            message: "Invalid password!"
-                        });
-                    }
-                }).catch(err => {
+                if (!data[0].verified) {
                     res.json({
                         status: "Failed",
-                        message: "An error occurred while comparing passwords!"
+                        message: "Email hasn't been verified"
                     });
-                });
+                } else {
+                    const hashedPassword = data[0].password;
+                    bcrypt.compare(password, hashedPassword).then(result => {
+                        if (result) {
+                            
+                            // Set session data
+                            req.session.userId = data[0]._id;
+                            req.session.email = data[0].email;
+                            
+                            // Set a test cookie
+                            res.cookie('testCookie', 'test-value', {
+                                maxAge: 900000,
+                                httpOnly: true,
+                                secure: false,
+                                sameSite: 'none'
+                            });
+
+                            // Force session save
+                            req.session.save((err) => {
+                                if (err) {
+                                    console.error('Session save error:', err);
+                                    return res.status(500).json({
+                                        status: "Failed",
+                                        message: "Session save failed"
+                                    });
+                                }
+                                
+                                res.status(200).json({
+                                    status: "Success",
+                                    message: "Sign in successful",
+                                    data: {
+                                        userId: data[0]._id,
+                                        email: data[0].email,
+                                        name: data[0].name
+                                    },
+                                    sessionId: req.sessionID
+                                });
+                            });
+                        } else {
+                            res.json({
+                                status: "Failed",
+                                message: "Invalid password!"
+                            });
+                        }
+                    }).catch(err => {
+                        console.error('Password compare error:', err);
+                        res.json({
+                            status: "Failed",
+                            message: "An error occurred while comparing passwords!"
+                        });
+                    });
                 }
-                
             } else {
                 res.json({
                     status: "Failed",
@@ -319,6 +349,7 @@ router.post('/signin', (req, res) => {
                 });
             }
         }).catch(err => {
+            console.error('User find error:', err);
             res.json({
                 status: "Failed",
                 message: "An error occurred while checking for existing user!"
@@ -356,6 +387,7 @@ router.delete('/deleteUser/:userId', (req, res) => {
         });
 });
 
+  
 
 
 module.exports = router;
