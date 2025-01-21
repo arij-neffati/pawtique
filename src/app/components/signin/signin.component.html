@@ -1,66 +1,85 @@
 <section class="sign-in" style="background: url('../assets/images/background-img.png') no-repeat;">
   <div class="container">
-    <div class="signin-content">
+    <div class="signin-content" style="display: flex; align-items: center; justify-content: center; gap: 20px;">
       
-      <!-- Sign In Section -->
-      <div *ngIf="!isSignUp" class="signin-form">
-        <h2 class="form-title">Sign in</h2>
-        <form (ngSubmit)="handleSubmit()">
-          <div class="form-group">
-            <label for="your_name"><i class="material-icons">account_circle</i></label>
-            <input type="text" id="your_name" [(ngModel)]="username" name="username" placeholder="Your Name" required />
-          </div>
-          <div class="form-group">
-            <label for="your_pass"><i class="material-icons">lock</i></label>
-            <input type="password" id="your_pass" [(ngModel)]="password" name="password" placeholder="Password" required />
-          </div>
-          <div class="form-group">
-            <input type="checkbox" id="remember-me" class="agree-term" />
-            <label for="remember-me" class="label-agree-term"><span><span></span></span>Remember me</label>
-          </div>
-          <div class="form-group form-button">
-            <input type="submit" id="signin" class="form-submit" value="Log in" />
-          </div>
-        </form>
-        <p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
-        <a (click)="toggleForm()" class="toggle-link">Don't have an account? Sign Up</a>
+      <!-- Image Section -->
+      <div class="image-container" style="flex: 1;">
+        <img 
+          *ngIf="!isSignUp" 
+          src="../assets/images/signin.png" 
+          alt="Sign In Illustration" 
+          style="width: 100%; height: auto; object-fit: cover;" 
+        />
+        <img 
+          *ngIf="isSignUp" 
+          src="../assets/images/signup.png" 
+          alt="Sign Up Illustration" 
+          style="width: 100%; height: auto; object-fit: cover;" 
+        />
       </div>
       
-      <!-- Sign Up Section -->
-      <div *ngIf="isSignUp" class="signup-form">
-        <h2 class="form-title">Sign up</h2>
-        <form (ngSubmit)="onSignUpSubmit()">
-          <div class="form-group">
-            <label for="name"><i class="material-icons">account_circle</i></label>
-            <input type="text" [(ngModel)]="name" name="name" id="name" placeholder="Your Name" required />
-          </div>
-          <div class="form-group">
-            <label for="email"><i class="material-icons">email</i></label>
-            <input type="email" [(ngModel)]="email" name="email" id="email" placeholder="Your Email" required />
-          </div>
-          <div class="form-group">
-            <label for="pass"><i class="material-icons">lock</i></label>
-            <input type="password" [(ngModel)]="password" name="password" id="pass" placeholder="Password" required />
-          </div>
-          <div class="form-group">
-            <label for="re-pass"><i class="material-icons">lock_outline</i></label>
-            <input type="password" [(ngModel)]="confirmPassword" name="re-pass" id="re_pass" placeholder="Repeat your password" required />
-          </div>
-          <div class="form-group">
-            <label for="dob"><i class="material-icons">date_range</i></label>
-            <input type="date" id="dob" [(ngModel)]="dateOfBirth" name="dateOfBirth" placeholder="Date of Birth" required />
-          </div>
-          
-          <div class="form-group">
-            <input type="checkbox" [(ngModel)]="agreeTerms" name="agree-term" id="agree-term" class="agree-term" required />
-            <label for="agree-term" class="label-agree-term"><span><span></span></span>I agree all statements in <a href="#" class="term-service">Terms of service</a></label>
-          </div>
-          <div class="form-group form-button">
-            <input type="submit" id="signup" class="form-submit" value="Register" />
-          </div>
-        </form>
-        <a (click)="toggleForm()" class="toggle-link">Already a member? Sign In</a>
+      <!-- Forms Section -->
+      <div class="form-container" style="flex: 1;">
+        <!-- Sign In Section -->
+        <div *ngIf="!isSignUp" class="signin-form">
+          <h2 class="form-title">Sign in</h2>
+          <form (ngSubmit)="handleSubmit()">
+            <div class="form-group">
+              <label for="your_name"><i class="material-icons">account_circle</i></label>
+              <input type="text" id="your_name" [(ngModel)]="username" name="username" placeholder="Your Email" required />
+            </div>
+            <div class="form-group">
+              <label for="your_pass"><i class="material-icons">lock</i></label>
+              <input type="password" id="your_pass" [(ngModel)]="password" name="password" placeholder="Password" required />
+            </div>
+            <div class="form-group">
+              <input type="checkbox" id="remember-me" class="agree-term" />
+              <label for="remember-me" class="label-agree-term"><span><span></span></span>Remember me</label>
+            </div>
+            <div class="form-group form-button">
+              <input type="submit" id="signin" class="form-submit" value="Log in" />
+            </div>
+          </form>
+          <p *ngIf="errorMessage" style="color: red;">{{ errorMessage }}</p>
+          <a (click)="toggleForm()" class="toggle-link">Don't have an account? Sign Up</a>
+        </div>
+        
+        <!-- Sign Up Section -->
+        <div *ngIf="isSignUp" class="signup-form">
+          <h2 class="form-title">Sign up</h2>
+          <form (ngSubmit)="onSignUpSubmit()">
+            <div class="form-group">
+              <label for="name"><i class="material-icons">account_circle</i></label>
+              <input type="text" [(ngModel)]="name" name="name" id="name" placeholder="Your Name" required />
+            </div>
+            <div class="form-group">
+              <label for="email"><i class="material-icons">email</i></label>
+              <input type="email" [(ngModel)]="email" name="email" id="email" placeholder="Your Email" required />
+            </div>
+            <div class="form-group">
+              <label for="pass"><i class="material-icons">lock</i></label>
+              <input type="password" [(ngModel)]="password" name="password" id="pass" placeholder="Password" required />
+            </div>
+            <div class="form-group">
+              <label for="re-pass"><i class="material-icons">lock_outline</i></label>
+              <input type="password" [(ngModel)]="confirmPassword" name="re-pass" id="re_pass" placeholder="Repeat your password" required />
+            </div>
+            <div class="form-group">
+              <label for="dob"><i class="material-icons">date_range</i></label>
+              <input type="date" id="dob" [(ngModel)]="dateOfBirth" name="dateOfBirth" placeholder="Date of Birth" required />
+            </div>
+            <div class="form-group">
+              <input type="checkbox" [(ngModel)]="agreeTerms" name="agree-term" id="agree-term" class="agree-term" required />
+              <label for="agree-term" class="label-agree-term"><span><span></span></span>I agree all statements in <a href="#" class="term-service">Terms of service</a></label>
+            </div>
+            <div class="form-group form-button">
+              <input type="submit" id="signup" class="form-submit" value="Register" />
+            </div>
+          </form>
+          <a (click)="toggleForm()" class="toggle-link">Already a member? Sign In</a>
+        </div>
       </div>
+      
     </div>
   </div>
 </section>

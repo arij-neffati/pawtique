@@ -32,6 +32,7 @@
 <body>
     <div class="container">
         <script>
+            // Check URL parameters for error or success messages
             const urlParams = new URLSearchParams(window.location.search);
             const error = urlParams.get('error');
             const message = urlParams.get('message');
@@ -42,15 +43,9 @@
                 document.write('<div class="success">Email Verified Successfully!</div>');
             }
         </script>
-        <a onclick="redirectToSignIn()" class="btn">Go to Sign In</a>
 
-        <script>
-            function redirectToSignIn() {
-                const injector = window.getAngularInjector(); // Replace with a function to access Angular
-                const router = injector.get('Router');
-                router.navigate(['/signin']); // Adjust this to your Angular route for sign-in
-            }
-        </script>
+        <!-- Button to Navigate to Sign In -->
+        <a href="http://localhost:4200/signin" class="btn">Go to Sign In</a>
     </div>
 </body>
 </html>

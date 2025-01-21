@@ -2,6 +2,7 @@
   <div class="container my-5 py-5">
     <div class="section-header d-md-flex justify-content-between align-items-center">
       <h2 class="display-3 fw-normal">Pet Foodies</h2>
+      
       <div class="mb-4 mb-md-0">
         <p class="m-0">
           <button class="filter-button me-4" (click)="filterProducts('')">ALL</button>
@@ -20,22 +21,42 @@
       </div>
     </div>
 
-    <div class="isotope-container row">
-      <div *ngFor="let product of filteredProducts" class="item {{product.type}} col-md-4 col-lg-3 my-4">
-        <div *ngIf="product.status" class="z-1 position-absolute rounded-3 m-3 px-3 border border-dark-subtle">
-          {{ product.status }}
-        </div>
-        <div class="card position-relative">
-          <a [routerLink]="'/product/' + product._id">
-            <img [src]="product.image" class="img-fluid rounded-4" [alt]="product.name" />
-          </a>
-          <div class="card-body p-0">
-            <a [routerLink]="'/product/' + product._id">
-              <h3 class="card-title pt-4 m-0">{{ product.name }}</h3>
-            </a>
+    <!-- Search Bar -->
+    <div class="col-sm-6 offset-sm-2 offset-md-0 col-lg-5 d-none d-lg-block mx-auto mb-5">
+      <div class="search-bar border rounded-2 px-3 border-dark-subtle">
+        <form id="search-form" class="text-center d-flex align-items-center" (submit)="searchProducts()">
+          <input
+            type="text"
+            class="form-control border-0 bg-transparent"
+            placeholder="Search for products"
+            [(ngModel)]="searchQuery"
+            name="searchQuery"
+          />
+          <button type="submit" class="btn p-0 border-0 bg-transparent">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+              <path
+                fill="currentColor"
+                d="M21.71 20.29L18 16.61A9 9 0 1 0 16.61 18l3.68 3.68a1 1 0 0 0 1.42 0a1 1 0 0 0 0-1.39ZM11 18a7 7 0 1 1 7-7a7 7 0 0 1-7 7Z"
+              />
+            </svg>
+          </button>
+        </form>
+      </div>
+    </div>
 
+    <!-- Products Display -->
+    <div class="isotope-container">
+      <div *ngFor="let product of filteredProducts" class="item">
+        <div class="card">
+          <a [routerLink]="'/product/' + product._id">
+            <img [src]="product.image" class="img-fluid" [alt]="product.name" />
+          </a>
+          <div class="card-body">
+            <a [routerLink]="'/product/' + product._id">
+              <h3 class="card-title">{{ product.name }}</h3>
+            </a>
             <div class="card-text">
-              <span class="rating secondary-font">
+              <span class="rating">
                 <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
                 <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
                 <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
@@ -43,15 +64,13 @@
                 <iconify-icon icon="clarity:star-solid" class="text-primary"></iconify-icon>
                 {{ product.rating }}
               </span>
-
-              <h3 class="secondary-font text-primary">{{ product.price }} DT</h3>
-
-              <div class="d-flex flex-wrap mt-3">
-                <button class="btn-cart me-3 px-4 pt-3 pb-3" (click)="addToCart(product)">
-                  <h5 class="text-uppercase m-0">Add to Cart</h5>
+              <h3 class="text-primary">{{ product.price }} DT</h3>
+              <div class="d-flex mt-3">
+                <button class="btn-cart me-3" (click)="addToCart(product)">
+                  Add to Cart
                 </button>
-                <button class="btn-wishlist px-4 pt-3" (click)="addToWishlist(product)">
-                  <iconify-icon icon="fluent:heart-28-filled" class="fs-5"></iconify-icon>
+                <button class="btn-wishlist" (click)="addToWishlist(product)">
+                  <iconify-icon icon="fluent:heart-28-filled"></iconify-icon>
                 </button>
               </div>
             </div>

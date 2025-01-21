@@ -4,7 +4,7 @@
     <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
-        .header { background: #28a745; color: white; padding: 20px; text-align: center; }
+        .header { background: #b34176; color: white; padding: 20px; text-align: center; }
         .content { padding: 20px; background: #f8f9fa; }
         .info { margin: 20px 0; }
         .footer { text-align: center; padding: 20px; background: #f1f1f1; }
@@ -22,9 +22,9 @@
             <p>We are excited to confirm your order. Below are the details of your order:</p>
             <div class="info">
                 <p><strong>Order ID:</strong> {{orderId}}</p>
-                <p><strong>Total Price:</strong> ${{totalPrice}}</p>
+                <p><strong>Total Price:</strong> {{totalPrice}}TND</p>
                 <p><strong>Shipping Address:</strong></p>
-                <p>{{shippingAddress.address}}, {{shippingAddress.city}}, {{shippingAddress.postalCode}}, {{shippingAddress.country}}</p>
+                <p>{{shippingAddress.address}}</p>
             </div>
             <h3>Ordered Items:</h3>
             <ul>
@@ -33,7 +33,8 @@
             <p>We will process your order soon and notify you once it's on its way. If you have any questions, feel free to reach out to us.</p>
         </div>
         <div class="footer">
-            <p>Contact us: support@pawtique.com | Tel: (123) 456-7890</p>
+            <p>Contact us: 
+                pawsitive.paws.home@gmail.com </p>
         </div>
     </div>
 </body>

@@ -1,0 +1,11 @@
+.countdown-text {
+    color: black; /* Bright red */
+    font-size: 28px; /* Medium size */
+    font-weight: bold; /* Bold text */
+  }
+  
+  .debug-text {
+    color: #6C757D; /* Subtle gray for debug info */
+    font-size: 14px; /* Smaller size for debug text */
+  }
+  

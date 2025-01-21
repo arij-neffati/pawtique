@@ -94,7 +94,7 @@ const products = [
       {
         name: "Loulou saucisse pour chats",
         image:
-          "assets/images/sau1.png",
+          "assets/images/sau2.png",
         description:
           " Notre sélection de croquettes pour chats adultes, élaborées à partir de viande de volaille, et enrichies en protéines animales ainsi qu’en vitamines.",
         price: 2.300 ,

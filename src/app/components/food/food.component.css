@@ -1,0 +1,44 @@
+.isotope-container {
+    display: grid; /* Utilisation de CSS Grid pour aligner les cartes */
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); /* Colonnes flexibles */
+    gap: 20px; /* Espacement entre les cartes */
+  }
+  
+  .item {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    max-width: 100%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Optionnel : ajoute une ombre pour l'esthétique */
+    border-radius: 8px; /* Coins arrondis */
+    overflow: hidden; /* Évite que le contenu déborde */
+  }
+  
+  .card img {
+    width: 100%;
+    height: 200px; /* Hauteur fixe pour les images */
+    object-fit: cover; /* Ajuste l'image sans la déformer */
+  }
+  
+  .card-body {
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+  }
+  
+  .btn-cart,
+  .btn-wishlist {
+    flex: 1;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+  }
+  

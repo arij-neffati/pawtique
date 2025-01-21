@@ -1,14 +1,15 @@
-import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { Component, OnInit, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core'; 
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router'; // Import RouterModule
+import { RouterModule } from '@angular/router'; 
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
 import { WishlistService } from '../../services/wishlist.service';
+import { FormsModule } from '@angular/forms'; // Import FormsModule for ngModel
 
 @Component({
   selector: 'app-food',
   standalone: true,
-  imports: [CommonModule, RouterModule], // Include RouterModule
+  imports: [CommonModule, RouterModule, FormsModule], // Include FormsModule here
   templateUrl: './food.component.html',
   styleUrls: ['./food.component.css'],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
@@ -16,8 +17,9 @@ import { WishlistService } from '../../services/wishlist.service';
 export class FoodComponent implements OnInit {
   products: any[] = [];
   filteredProducts: any[] = [];
+  searchQuery: string = ''; // Define the searchQuery property
 
-  constructor(private productService: ProductService, private cartService: CartService, private wishlistService : WishlistService) {}
+  constructor(private productService: ProductService, private cartService: CartService, private wishlistService: WishlistService) {}
 
   ngOnInit(): void {
     this.loadProducts();
@@ -43,6 +45,16 @@ export class FoodComponent implements OnInit {
     );
   }
 
+  searchProducts(): void {
+    if (this.searchQuery) {
+      this.filteredProducts = this.products.filter(product =>
+        product.name.toLowerCase().includes(this.searchQuery.toLowerCase()) // Filter by product name
+      );
+    } else {
+      this.filteredProducts = this.products; // Show all products if search query is empty
+    }
+  }
+
   filterProducts(type: string): void {
     if (type) {
       this.filteredProducts = this.products.filter(product => product.type === type);
@@ -54,8 +66,8 @@ export class FoodComponent implements OnInit {
   addToCart(product: any): void {
     this.cartService.addToCart(product);
   }
+
   addToWishlist(product: any): void {
-    // Assuming you have a WishlistService to manage the wishlist
     this.wishlistService.addToWishlist(product);
   }
 }

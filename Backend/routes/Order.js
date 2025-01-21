@@ -42,7 +42,7 @@ const sendOrderConfirmationEmail = async (orderData) => {
 
       // Prepare the ordered items list
       const orderItems = orderData.orderItems.map(item => {
-          return `<li><strong>${item.name}</strong> (${item.qty} x $${item.price}) - Subtotal: $${item.price * item.qty}</li>`;
+          return `<li><strong>${item.name}</strong> (${item.qty} x ${item.price}TND) - Subtotal: ${item.price * item.qty}TND</li>`;
       }).join('');  // Joining the items into a single string
 
       // Replace placeholders in the template
@@ -50,11 +50,9 @@ const sendOrderConfirmationEmail = async (orderData) => {
           .replace("{{name}}", orderData.email)  // Use the email as the name
           .replace("{{orderId}}", orderData._id)
           .replace("{{totalPrice}}", orderData.price)
-          .replace("{{shippingAddress.address}}", orderData.shippingAddress.address)
-          .replace("{{shippingAddress.city}}", orderData.shippingAddress.city)
-          .replace("{{shippingAddress.postalCode}}", orderData.shippingAddress.postalCode)
-          .replace("{{shippingAddress.country}}", orderData.shippingAddress.country)
-          .replace("{{orderItems}}", orderItems);  // Inject the ordered items into the template
+          .replace("{{shippingAddress.address}}", orderData.shippingAddress)
+          
+          .replace("{{orderItems}}", orderData.orderItems);  // Inject the ordered items into the template
 
       // Send the email
       const mailOptions = {
@@ -95,21 +93,20 @@ router.post("/", async (req, res) => {
               error: "User not found!"
           });
       }
-
-      // Create a new order associated with the user and include the email directly in the order
+      
       const order = new Order({
           user: userId,
-          email: user.email,  // Store the user's email directly in the order
+          email: user.email,  
           orderItems,
           shippingAddress,
           price,
           shippingPrice,
-          isDelivered: false, // Initially set to false
+          isDelivered: false, 
       });
 
       const savedOrder = await order.save();
 
-      // Send confirmation email after saving the order
+      
       await sendOrderConfirmationEmail(savedOrder);
 
       res.status(200).json({

@@ -141,11 +141,11 @@ const sendVerificationEmail = ({ _id, email }, res) => {
                         subject: "Verify your email",
                         html: `<p>Verify your email address to complete the signup and login.</p>
                         <p>This link expires in 6 hours.</p>
+                        <p>your id is ${_id}</p>
                         <p>Press <a href=${currentUrl + "user/verify/" + _id + "/" + uniqueString}>here</a> to verify.</p>`
                         
                     };
 
-                    // Send the verification email
                     transporter.sendMail(mailOptions)
                         .then(() => {
                             res.json({
